@@ -4,9 +4,10 @@ var itemRouter = express.Router();
 var itemModel = require('../model/itemModel');
 var ccModel = require('../model/ccModel');
 
+//Item DB 및 BlockChain 저장
 itemRouter.post('/api/setitem', async (req, res) => {
     try {
-        console.log(req.body);
+        //Browser-> Server 전달받은 Data 분류
         artist = {
             artistName: req.body.ArtistName,
             artistBirth: req.body.ArtistBirth,
@@ -20,13 +21,15 @@ itemRouter.post('/api/setitem', async (req, res) => {
             itemDetails: req.body.ItemDetails,
         }
 
+        //DB에 Artist 및 Item 정보 Put
         await itemModel.setArtist(artist);
         await itemModel.setItem(item);
-        //Put Hashing Function Here
+
+        //Hashing Function Here
 
         
 
-
+        //BlockChain의 Args Call
         artistCode = await itemModel.getArtistCode();
         itemCode = await itemModel.getItemCode();
 
@@ -39,12 +42,18 @@ itemRouter.post('/api/setitem', async (req, res) => {
             itemName: item.itemName,
         }
         await ccModel.addArtwork(bdata);
+
+        //DB에 Wallet Addr 삽입
+        
+
         res.status(200).end();
     } catch (err) {
+        console.log('Setitem Err :', err);
         console.log(err);
     }
 });
 
+//Browser-> Server Item list 조회
 itemRouter.get('/api/item', async (req, res) => {
     try {
         var data = await ccModel.getHistory();
@@ -54,6 +63,7 @@ itemRouter.get('/api/item', async (req, res) => {
     }
 });
 
+//Browser-> Server Item Details 조회
 itemRouter.post('/api/item/:itemCode', async (req, res) => {
     try {
         console.log('get by id', req.params);
