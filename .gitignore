@@ -1,0 +1,6 @@
+application/node_modules
+application/bin
+application/wallet
+network/base
+network/config
+network/crypto-config
