@@ -30,9 +30,6 @@ itemRouter.post('/api/setitem', async (req, res) => {
         artistCode = await itemModel.getArtistCode();
         itemCode = await itemModel.getItemCode();
 
-        console.log('artistCode : ', artistCode);
-        console.log('itemCode : ', itemCode);
-
         //itemImageHash에 Image Hashing한 Data 삽입
         bdata = {
             itemCode: JSON.stringify(itemCode),
@@ -57,10 +54,10 @@ itemRouter.get('/api/item', async (req, res) => {
     }
 });
 
-itemRouter.post('/api/item/:id', async (req, res) => {
+itemRouter.post('/api/item/:itemCode', async (req, res) => {
     try {
-        console.log(req.body);
-        var data = await ccModel.getArtData(req.body);
+        console.log('get by id', req.params);
+        var data = await ccModel.getArtwork(req.params);
         res.status(200).send(data);
     } catch (err) {
         console.log(err);
