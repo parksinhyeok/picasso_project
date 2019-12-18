@@ -1,5 +1,5 @@
 ---
-name: trucker-network
+name: basic-network
 version: 1.0.0
 client:
     organization: Org1
@@ -9,41 +9,25 @@ client:
                 endorser: '300'
             orderer: '300'
 channels:
-    trucker:
+    mychannel:
         orderers:
-        - orderer.trucker.com
+        - orderer.example.com
         peers:
-            peer0.org1.trucker.com: {}
+            peer0.org1.example.com: {}
 organizations:
     Org1:
         mspid: Org1MSP
         peers:
-        - peer0.org1.trucker.com
+        - peer0.org1.example.com
         certificateAuthorities:
-        - ca.trucker.com
-    Org2:
-        mspid: Org2MSP
-        peers:
-        - peer0.org2.trucker.com
-        certificateAuthorities:
-        - ca.trucker.com
-    Org3:
-        mspid: Org3MSP
-        peers:
-        - peer0.org3.trucker.com
-        certificateAuthorities:
-        - ca.trucker.com
+        - ca.example.com
 orderers:
-    orderer.trucker.com:
+    orderer.example.com:
         url: grpc://localhost:7050
 peers:
-    peer0.org1.trucker.com:
-        url: grpc://localhost:7051
-    peer0.org2.trucker.com:
-        url: grpc://localhost:7051
-    peer0.org3.trucker.com:
+    peer0.org1.example.com:
         url: grpc://localhost:7051
 certificateAuthorities:
-    ca.trucker.com:
+    ca.example.com:
         url: http://localhost:7054
-        caName: ca.trucker.com
+        caName: ca.example.com
