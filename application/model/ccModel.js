@@ -77,7 +77,6 @@ class ccModel {
                     //  await contract.submitTransaction('createCar', 'CAR11', 'Hnda', 'Aord', 'Bla', 'Tom');
                     var rawData = await contract.submitTransaction('getHistory');
                     var json = rawData.toString();
-                    console.log('Get History Data : ', json);
                     console.log('Transaction has been submitted');
                     // Disconnect from the gateway.
                     await gateway.disconnect();
@@ -119,7 +118,6 @@ class ccModel {
                     //  await contract.submitTransaction('createCar', 'CAR11', 'Hnda', 'Aord', 'Bla', 'Tom');
                     var rawData = await contract.submitTransaction('getArtwork', data.itemCode);
                     var json = rawData.toString();
-                    console.log('Get Artwork Data : ', json);
                     console.log('Transaction has been submitted');
                     // Disconnect from the gateway.
                     await gateway.disconnect();

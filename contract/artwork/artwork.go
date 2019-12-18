@@ -19,10 +19,10 @@ type Artwork struct {
 	ObjectType	string `json:"artworkType"`
 	ItemCode string `json:"itemcode"`
 	ArtistCode string `json:"artistcode"`
-	ItemImageHash string `json:"itemimagehash"` // 출발지
-	ItemCertificate string `json:"itemcertificate"` // 도착지 
-	ItemName string `json:"itemname"`   // 적재 중량
-	Date string `json:"date"` // 완료 시간
+	ItemImageHash string `json:"itemimagehash"` // 이미지 해시
+	ItemCertificate string `json:"itemcertificate"` // 인증서
+	ItemName string `json:"itemname"`   // 작품 명
+	Date string `json:"date"` // 등록 날짜
 }
 
 func (s *ChainCode) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
