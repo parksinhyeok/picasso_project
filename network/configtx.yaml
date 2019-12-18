@@ -1,137 +1,114 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 
 ---
-
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
 Organizations:
-
     - &OrdererOrg
-
         Name: OrdererOrg
-
- 
         ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/example.com/msp
 
-
-        MSPDir: crypto-config/ordererOrganizations/trucker.com/msp
-
-    - &Org1
-
- 
-        Name: Org1MSP
-
-        ID: Org1MSP
-
-        MSPDir: crypto-config/peerOrganizations/org1.trucker.com/msp
-        # Policies: &Org1Policies
-        #     Readers:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.member')"
-        #     Writers:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.member')"
-        #     Admins:
-        #         Type: Signature
-        #         Rule: "OR('Org1MSP.admin')"
+    - &Artist
+        Name: ArtistMSP
+        ID: ArtistMSP
+        MSPDir: crypto-config/peerOrganizations/artist.example.com/msp
         AnchorPeers:
-            - Host: peer0.org1.trucker.com
-              Port: 7051
-    
-    - &Org2
-        Name: Org2MSP
-        ID: Org2MSP
-        MSPDir: crypto-config/peerOrganizations/org2.trucker.com/msp
-        # Policies: &Org2Policies
-        #     Readers:
-        #         Type: Signature
-        #         Rule: "OR('Org2MSP.member')"
-        #     Writers:
-        #         Type: Signature
-        #         Rule: "OR('Org2MSP.member')"
-        #     Admins:
-        #         Type: Signature
-        #         Rule: "OR('Org2MSP.admin')"
-        AnchorPeers:
-            - Host: peer0.org2.trucker.com
+            - Host: peer0.artist.example.com
               Port: 7051
 
-    - &Org3
-        Name: Org3MSP
-        ID: Org3MSP
-        MSPDir: crypto-config/peerOrganizations/org3.trucker.com/msp
-        # Policies: &Org2Policies
-        #     Readers:
-        #         Type: Signature
-        #         Rule: "OR('Org2MSP.member')"
-        #     Writers:
-        #         Type: Signature
-        #         Rule: "OR('Org2MSP.member')"
-        #     Admins:
-        #         Type: Signature
-        #         Rule: "OR('Org2MSP.admin')"
+    - &Company
+        Name: CompanyMSP
+        ID: CompanyMSP
+        MSPDir: crypto-config/peerOrganizations/company.example.com/msp
         AnchorPeers:
-            - Host: peer0.org3.trucker.com
+            - Host: peer0.company.example.com
               Port: 7051
 
+    - &Client
+        Name: ClientMSP
+        ID: ClientMSP
+        MSPDir: crypto-config/peerOrganizations/client.example.com/msp
+        AnchorPeers:
+            - Host: peer0.client.example.com
+              Port: 7051
 
-
-Capabilities:
-    Channel: &ChannelCapabilities
-        V1_3: true
-    Orderer: &OrdererCapabilities
-        V1_1: true
-    Application: &ApplicationCapabilities
-        V1_3: true
-        V1_2: false
-        V1_1: false
-
+################################################################################
+#
+#   SECTION: Application
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for application related parameters
+#
+################################################################################
 Application: &ApplicationDefaults
 
+    # Organizations is the list of orgs which are defined as participants on
+    # the application side of the network
     Organizations:
 
-    Capabilities:
-        <<: *ApplicationCapabilities
-
-
+################################################################################
+#
+#   SECTION: Orderer
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for orderer related parameters
+#
+################################################################################
 Orderer: &OrdererDefaults
 
-
+    # Orderer Type: The orderer implementation to start
+    # Available types are "solo" and "kafka"
     OrdererType: solo
 
     Addresses:
-        - orderer.trucker.com:7050
+        - orderer.example.com:7050
 
+    # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
 
+    # Batch Size: Controls the number of messages batched into a block
     BatchSize:
 
+        # Max Message Count: The maximum number of messages to permit in a batch
         MaxMessageCount: 10
 
-
+        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
+        # the serialized messages in a batch.
         AbsoluteMaxBytes: 99 MB
 
-
+        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
+        # the serialized messages in a batch. A message larger than the preferred
+        # max bytes will result in a batch larger than preferred max bytes.
         PreferredMaxBytes: 512 KB
 
     Kafka:
-
+        # Brokers: A list of Kafka brokers to which the orderer connects
+        # NOTE: Use IP:port notation
         Brokers:
             - 127.0.0.1:9092
+
+    # Organizations is the list of orgs which are defined as participants on
+    # the orderer side of the network
     Organizations:
 
-Channel: &ChannelDefaults
-    Policies:
-        Readers:
-            Type: ImplicitMeta
-            Rule: "ANY Readers"
-        Writers:
-            Type: ImplicitMeta
-            Rule: "ANY Writers"
-        Admins:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
-    Capabilities:
-        <<: *ChannelCapabilities
-        
-
+################################################################################
+#
+#   Profile
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
+#
+################################################################################
 Profiles:
 
     ThreeOrgOrdererGenesis:
@@ -139,23 +116,17 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-            Capabilities:
-                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Org1
-                    - *Org2
-                    - *Org3
-                   
+                    - *Artist
+                    - *Company
+                    - *Client
     ThreeOrgChannel:
         Consortium: SampleConsortium
-        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org1
-                - *Org2
-                - *Org3
-            Capabilities:
-                <<: *ApplicationCapabilities
+                - *Artist
+                - *Company
+                - *Client
