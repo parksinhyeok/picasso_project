@@ -7,8 +7,12 @@ class itemModel {
         return new Promise (
             async (resolve, reject) => {
                 try {
-                    var sql = 'INSERT INTO artist (artistName, artistRef, artistBirth, artistIntro) values (? ,? ,? ,?)';
-                    myConnection.query(sql, [data.artistName, data.artistBirth, data.artistRef, data.artistIntro]);
+                    console.log(data);
+                    // var sql = 'INSERT INTO artist (artistName, artistRef, artistBirth, artistIntro) values (? ,? ,? ,?)';
+                    var sql = 'INSERT INTO artist (artistName, artistIntro) values (? , ?)';
+
+                    // myConnection.query(sql, [data.artistName, data.artistBirth, data.artistRef, data.artistIntro]);
+                    myConnection.query(sql, [data.artistName, data.artistIntro]);
                     resolve(true);
                 } catch (err) {
                     console.log('setArtist Err', err)
@@ -24,8 +28,8 @@ class itemModel {
             async (resolve, reject) => {
                 try {
                     console.log(data)
-                    var sql = 'INSERT INTO artwork (image) values (?)';
-                    await myConnection.query(sql, [data.itemImage]);
+                    var sql = 'INSERT INTO artwork (image, certification) values (?, ?)';
+                    await myConnection.query(sql, [data.itemImage, data.itemCertificate]);
                     resolve(true);
                 } catch (err) {
                     console.log('Set Item Err', err);
@@ -65,6 +69,20 @@ class itemModel {
                 } catch (err) {
                     console.log('Get Artist Code Err', err);
                     reject(err);
+                }
+            }
+        )
+    }
+    getAllArtist(data) {
+        return new Promise (
+            async (resolve, reject) => {
+                try {
+                    var sql = 'SELECT * FROM artist WHERE id = ?';
+                    var result = await myConnection.query(sql, [parseInt(data)]);
+                    resolve(result[0][0]);
+                } catch (err) {
+                    console.log('getAllArtist Err', err);
+                    reject(err)
                 }
             }
         )
